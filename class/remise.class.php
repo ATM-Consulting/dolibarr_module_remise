@@ -91,11 +91,34 @@ class TRemise extends TObjetStd {
 
 	static function getTotal(&$object, $type='ht') {
 		
+		global $conf, $db;
 		
+		$id_categ = $conf->global->REMISE_ID_CATEG_TO_EXCLUDE;
+		
+		if(empty($id_categ)) return $object->{'total_'.$type};
+		
+		$total = 0;
 		
 		foreach ($object->lines as $line) {
 			
+			if($line->fk_product > 0){
+			
+				$sql = 'SELECT fk_product
+						FROM '.MAIN_DB_PREFIX.'categorie_product
+						WHERE fk_categorie = '.$id_categ.'
+						AND fk_product = '.$line->fk_product;
+				
+				$resql = $db->query($sql);
+				$res = $db->fetch_object($resql);
+				if($res->fk_product > 0) continue;
+			
+			}
+
+			$total+=$line->total_ht;
+			
 		}
+		
+		return $total;
 		
 	}
 
