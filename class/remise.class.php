@@ -88,6 +88,17 @@ class TRemise extends TObjetStd {
 		else return $remise_used;
 		
 	}
+
+	static function getTotal(&$object, $type='ht') {
+		
+		
+		
+		foreach ($object->lines as $line) {
+			
+		}
+		
+	}
+
 	static function alreadyAdded(&$object) {
 		global $conf;
 		

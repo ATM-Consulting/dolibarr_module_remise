@@ -141,7 +141,8 @@ class InterfaceRemise
 			
 			if(!$remiseAlreadyInDoc && !empty($fk_product) && $object->array_options['options_use_remise'] === 'Oui') {
 			    dol_include_once('/product/class/product.class.php','Product');
-                $remise_used_montant = TRemise::getRemise($PDOdb, 'AMOUNT', $object->total_ht);
+				$total = TRemise::getTotal($object);
+                $remise_used_montant = TRemise::getRemise($PDOdb, 'AMOUNT', $total);
 				
                 $remise_used_weight = 0;
                 if($conf->global->REMISE_USE_WEIGHT) {
@@ -161,9 +162,9 @@ class InterfaceRemise
 				$used_tva = ($object->client->tva_assuj == 1) ? $p->tva_tx : 0;
 				
 				if($object->element == 'commande' || (float)DOL_VERSION == 3.6) { // Les paramètres sont tous dans le même ordre dans doulibarr 3.6
-					$object->addline("Remise de ".$remise_used.' %', ($object->total_ht * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
+					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
 				} else if($object->element == 'propal') {
-					$object->addline("Remise de ".$remise_used.' %', ($object->total_ht * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
+					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
 				}
                 
                // setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );

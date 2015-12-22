@@ -35,6 +35,7 @@ global $db;
 dol_include_once("remise/core/lib/admin.lib.php");
 dol_include_once('remise/lib/remise.lib.php');
 dol_include_once('core/lib/admin.lib.php');
+dol_include_once('/categories/class/categorie.class.php');
 //require_once "../class/myclass.class.php";
 // Translations
 $langs->load("remise@remise");
@@ -51,11 +52,11 @@ $action = GETPOST('action', 'alpha');
  * Actions
  */
 
+
 switch ($action) {
-   
 		
 	case 'saveIDServiceToUse':
-		if(_saveIDServiceToUse($db, $_REQUEST['idservice'])) {
+		if(_saveConst($db, 'REMISE_ID_SERVICE_TO_USE', $_REQUEST['idservice'])) {
 			
 			setEventMessage($langs->trans('IDServiceSaved'));
 			
@@ -66,6 +67,17 @@ switch ($action) {
 		}
 		
 		break;
+	
+	case 'saveIDCategToExclude':
+		if(_saveConst($db, 'REMISE_ID_CATEG_TO_EXCLUDE', $_REQUEST['idcategtoexclude'])) {
+			
+			setEventMessage($langs->trans('IDCategSaved'));
+			
+		} else {
+			
+			setEventMessage($langs->trans('IDCategNotSaved'), 'errors');
+			
+		}
 	
 	default:
 		
@@ -97,11 +109,11 @@ dol_fiche_head(
 );
 
 
-function _saveIDServiceToUse($db, $idservice_to_use) {
+function _saveConst($db, $name, $val) {
 	
-	if(!empty($idservice_to_use)) {
+	if(!empty($val)) {
 		
-		dolibarr_set_const($db, 'REMISE_ID_SERVICE_TO_USE', $idservice_to_use);
+		dolibarr_set_const($db, $name, $val);
 		return true;
 		
 	}
@@ -109,18 +121,20 @@ function _saveIDServiceToUse($db, $idservice_to_use) {
 	return false;
 	
 }
-   
-
-print '<form name="formIDServiceToUse" method="POST" action="" />';
 
 $form = new Form($db);
 
-$form->select_produits(dolibarr_get_const($db, 'REMISE_ID_SERVICE_TO_USE'),'idservice',1,$conf->product->limit_size,$buyer->price_level);
-
+print '<form name="formIDServiceToUse" method="POST" action="" />';
+$form->select_produits($conf->global->REMISE_ID_SERVICE_TO_USE,'idservice',1,$conf->product->limit_size,$buyer->price_level);
 print '<input type="hidden" name="action" value="saveIDServiceToUse" />';
-
 print '<input type="SUBMIT" name="subIDServiceToUse" value="Utiliser ce service" />';
+print '</form>';
 
+print '<form name="formIDCategToExclude" method="POST" action="" />';
+print 'Sélection catégorie : ';
+print $form->select_all_categories(0, $conf->global->REMISE_ID_CATEG_TO_EXCLUDE,'idcategtoexclude');
+print '<input type="hidden" name="action" value="saveIDCategToExclude" />';
+print '<input type="SUBMIT" name="subIDServiceToUse" value="Exclure cette catégorie" />';
 print '</form>';
 
 ?>
