@@ -33,7 +33,7 @@
 /**
  * Trigger class
  */
-class InterfaceFraisdeport
+class InterfaceRemise
 {
 
     private $db;
@@ -120,7 +120,7 @@ class InterfaceFraisdeport
         	
 			global $db,$conf;
 
-			$langs->load('fraisdeport@fraisdeport');
+			$langs->load('remise@remise');
 			
 			$object->fetch_optionals($object->id);
 			/*echo "<pre>";
@@ -130,27 +130,27 @@ class InterfaceFraisdeport
 			dol_include_once('core/lib/admin.lib.php');
 			
 			define('INC_FROM_DOLIBARR',true);
-			dol_include_once('/fraisdeport/config.php');		
-			dol_include_once('/fraisdeport/class/fraisdeport.class.php');
+			dol_include_once('/remise/config.php');		
+			dol_include_once('/remise/class/remise.class.php');
 			$PDOdb=new TPDOdb;
-			// On récupère les frais de port définis dans la configuration du module
+			// On récupère les remises définis dans la configuration du module
 			
-            $fdpAlreadyInDoc = TFraisDePort::alreadyAdded( $object );
+            $remiseAlreadyInDoc = TRemise::alreadyAdded( $object );
 			
-			$fk_product = $conf->global->FRAIS_DE_PORT_ID_SERVICE_TO_USE;
+			$fk_product = $conf->global->REMISE_ID_SERVICE_TO_USE;
 			
-			if(!$fdpAlreadyInDoc && !empty($fk_product) && $object->array_options['options_use_frais_de_port'] === 'Oui') {
+			if(!$remiseAlreadyInDoc && !empty($fk_product) && $object->array_options['options_use_remise'] === 'Oui') {
 			    dol_include_once('/product/class/product.class.php','Product');
-                $fdp_used_montant = TFraisDePort::getFDP($PDOdb, 'AMOUNT', $object->total_ht);
+                $remise_used_montant = TRemise::getRemise($PDOdb, 'AMOUNT', $object->total_ht);
 				
-                $fdp_used_weight = 0;
-                if($conf->global->FRAIS_DE_PORT_USE_WEIGHT) {
-                	$total_weight = TFraisDePort::getTotalWeight($object);
-					$fdp_used_weight = TFraisDePort::getFDP($PDOdb, 'WEIGHT', $total_weight, $object->client->zip);
+                $remise_used_weight = 0;
+                if($conf->global->REMISE_USE_WEIGHT) {
+                	$total_weight = TRemise::getTotalWeight($object);
+					$remise_used_weight = TRemise::getRemise($PDOdb, 'WEIGHT', $total_weight, $object->client->zip);
 					
 				}
                
-                $fdp_used = max($fdp_used_weight, $fdp_used_montant );
+                $remise_used = max($remise_used_weight, $remise_used_montant );
              	
 				$p = new Product($db);
 				$p->fetch($fk_product);
@@ -160,12 +160,12 @@ class InterfaceFraisdeport
 				$used_tva = ($object->client->tva_assuj == 1) ? $p->tva_tx : 0;
 				
 				if($object->element == 'commande') {
-					$object->addline("Frais de port", $fdp_used, 1, $used_tva, 0, 0, $fk_product, 0, 0, 0, 'HT', 0, '', '', $p->type);
+					$object->addline("Remise", $remise_used, 1, $used_tva, 0, 0, $fk_product, 0, 0, 0, 'HT', 0, '', '', $p->type);
 				} else if($object->element == 'propal') {
-					$object->addline("Frais de port", $fdp_used, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
+					$object->addline("Remise", $remise_used, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
 				}
                 
-                setEventMessage($langs->trans('PortTaxAdded').' : '.price($fdp_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
+                setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
 				
 				$object->fetch($object->id);
 				$object->statut = 1; // TODO AA à quoi ça sert... Puisqu'il n'ya pas de save... :-|

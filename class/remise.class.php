@@ -1,12 +1,12 @@
 <?php
 
 
-class TFraisDePort extends TObjetStd {
+class TRemise extends TObjetStd {
     function __construct() {
         global $langs;
          
-        parent::set_table(MAIN_DB_PREFIX.'frais_de_port');
-        parent::add_champs('palier,fdp',array('type'=>'float', 'index'=>true));
+        parent::set_table(MAIN_DB_PREFIX.'remise');
+        parent::add_champs('palier,remise',array('type'=>'float', 'index'=>true));
         parent::add_champs('zip,type',array('index'=>true));
         parent::add_champs('fk_shipment_mode',array('type'=>'int', 'index'=>true));
         
@@ -17,10 +17,10 @@ class TFraisDePort extends TObjetStd {
 	
 	static function getAll(&$PDOdb, $type='AMOUNT', $asArray=false, $with_zip = false, $with_fk_shipment_mode = false) {
 		
-		$TFdp = array();
+		$TRemise = array();
 		
-		$sql = "SELECT rowid,palier,fdp,zip,fk_shipment_mode
-		FROM ".MAIN_DB_PREFIX."frais_de_port WHERE type='".$type."' 
+		$sql = "SELECT rowid,palier,remise,zip,fk_shipment_mode
+		FROM ".MAIN_DB_PREFIX."remise WHERE type='".$type."' 
 		";
 		
 		if($type == 'AMOUNT') $sql.="ORDER BY palier ASC,zip DESC ,fk_shipment_mode DESC";
@@ -40,43 +40,43 @@ class TFraisDePort extends TObjetStd {
 				if($last_palier < $row->palier) $last_palier = $row->palier;
 			}
 			else {
-				$o=new TFraisDePort;
+				$o=new TRemise;
 				$o->load($PDOdb, $row->rowid );
 				
 			}		
-			$TFdp[] = $o;			
+			$TRemise[] = $o;			
 			
 		}
 		
-		return $TFdp;
+		return $TRemise;
 	}
-	static function getFDP(&$PDOdb, $type, $total, $zip='', $fk_shipment_mode = 0) {
+	static function getRemise(&$PDOdb, $type, $total, $zip='', $fk_shipment_mode = 0) {
 		
-		$TFraisDePort = TFraisDePort::getAll($PDOdb, $type, true, !empty($zip), !empty($fk_shipment_mode));
-		$fdp_used = 0; $find = false;
-        if(is_array($TFraisDePort) && count($TFraisDePort) > 0) {
+		$TRemise = TRemise::getAll($PDOdb, $type, true, !empty($zip), !empty($fk_shipment_mode));
+		$remise_used = 0; $find = false;
+        if(is_array($TRemise) && count($TRemise) > 0) {
         		
-        	foreach ($TFraisDePort as &$fdp) {
+        	foreach ($TRemise as &$remise) {
             		
-            	if($type === 'WEIGHT' && $total >= $fdp['palier'] && ($fdp['fdp']>$fdp_used || empty($fdp_used) )) {
+            	if($type === 'WEIGHT' && $total >= $remise['palier'] && ($remise['remise']>$remise_used || empty($remise_used) )) {
                 	
-					if( (!empty($zip) && !empty( $fdp['zip'] ) && strpos($zip,$fdp['zip']) === 0 ) ) {
-						$fdp_used = $fdp['fdp'];
+					if( (!empty($zip) && !empty( $remise['zip'] ) && strpos($zip,$remise['zip']) === 0 ) ) {
+						$remise_used = $remise['remise'];
 						$find=true;
 						break;
 					}
-					else if(empty($zip) && empty($fdp['zip'])  ) {
-						// pas de frais de port associé au code poste trouvé avant
+					else if(empty($zip) && empty($remise['zip'])  ) {
+						// pas de remise associée au code poste trouvé avant
 						$find=true;
-						$fdp_used = $fdp['fdp'];
+						$remise_used = $remise['remise'];
 						break;
 					}
 					
                     
                 }
 				else if($type==='AMOUNT') {
-					if($total < $fdp['palier'] && ($fdp['fdp']<$fdp_used || empty($fdp_used) ) ) {
-							$fdp_used = $fdp['fdp'];
+					if($total < $remise['palier'] && ($remise['remise']<$remise_used || empty($remise_used) ) ) {
+							$remise_used = $remise['remise'];
 							$find = true;
 					}
 				}
@@ -84,25 +84,25 @@ class TFraisDePort extends TObjetStd {
             }
         }
 		
-		if(!$find && !empty($zip)) return TFraisDePort::getFDP($PDOdb, $type, $total);
-		else return $fdp_used;
+		if(!$find && !empty($zip)) return TRemise::getRemise($PDOdb, $type, $total);
+		else return $remise_used;
 		
 	}
 	static function alreadyAdded(&$object) {
 		global $conf;
 		
-		$fdpAlreadyInDoc = false;
-		$fk_product = $conf->global->FRAIS_DE_PORT_ID_SERVICE_TO_USE;
+		$remiseAlreadyInDoc = false;
+		$fk_product = $conf->global->REMISE_ID_SERVICE_TO_USE;
 		
 		
 		foreach($object->lines as $line) {
 			if(!empty($line->fk_product) && $line->fk_product == $fk_product) {
-				$fdpAlreadyInDoc = true;
+				$remiseAlreadyInDoc = true;
                 break;
 			}
 		}
 		
-		return $fdpAlreadyInDoc;
+		return $remiseAlreadyInDoc;
 	}
     
 	static function getTotalWeight(&$object) {

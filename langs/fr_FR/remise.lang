@@ -1,0 +1,12 @@
+Module104150Name = Remises Automatiques
+ModuleXXXXXXDesc = Descripion
+RemiseSetup=Administration du module Remises
+EurosPallier=Pallier en euros
+TarifRemise=Montant des remises
+SaveRemise=Enregistrer les frais de port
+RemiseSaved=Remises enregistrés avec succès !
+IDServiceSaved=Ce service sera utilisé pour la gestion des frais de port !
+IDServiceNotSaved=Aucun service trouvé...
+PortTaxAdded=Remise ajoutée
+UseWeight=Gérer les remises de port en fonction du poids
+RegisterSuccess=Paramètres enregistrés avec succès

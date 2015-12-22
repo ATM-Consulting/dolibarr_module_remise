@@ -31,14 +31,14 @@ if (! $res) {
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
-require_once '../lib/fraisdeport.lib.php';
+require_once '../lib/remise.lib.php';
 
 dol_include_once('/mymodule/lib/php-markdown/markdown.php');
 
 
 //require_once "../class/myclass.class.php";
 // Translations
-$langs->load("fraisdeport@fraisdeport");
+$langs->load("remise@remise");
 
 // Access control
 if (! $user->admin) {
@@ -64,7 +64,7 @@ $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
-$head = fraisdeportAdminPrepareHead();
+$head = remiseAdminPrepareHead();
 dol_fiche_head(
     $head,
     'about',
@@ -82,7 +82,7 @@ dol_fiche_head(
 			<tr class="impair">
 				<td valign="top">Module développé par </td>
 				<td align="center">
-					<img src="<?=DOL_URL_ROOT?>/custom/fraisdeport/img/logo2-w-small.png" align="absmiddle"/>
+					<img src="<?=DOL_URL_ROOT?>/custom/remise/img/logo2-w-small.png" align="absmiddle"/>
 					
 				</td>
 				

@@ -1,5 +1,5 @@
 <?php
-/* Module de gestion des frais de port
+/* Module de gestion des remises
  * Copyright (C) 2013 ATM Consulting <support@atm-consulting.fr>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,19 +25,19 @@
 // Dolibarr environment
 
 require('../config.php');
-dol_include_once('/fraisdeport/class/fraisdeport.class.php');
+dol_include_once('/remise/class/remise.class.php');
 
 $PDOdb=new TPDOdb;
 
 global $db;
 
 // Libraries
-dol_include_once("fraisdeport/core/lib/admin.lib.php");
-dol_include_once('fraisdeport/lib/fraisdeport.lib.php');
+dol_include_once("remise/core/lib/admin.lib.php");
+dol_include_once('remise/lib/remise.lib.php');
 dol_include_once('core/lib/admin.lib.php');
 //require_once "../class/myclass.class.php";
 // Translations
-$langs->load("fraisdeport@fraisdeport");
+$langs->load("remise@remise");
 
 // Access control
 if (! $user->admin) {
@@ -78,7 +78,7 @@ switch ($action) {
 
 //print_r($TFraisDePort);
  
-$page_name = "FraisDePortSetup";
+$page_name = "RemiseSetup";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
@@ -87,13 +87,13 @@ $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
-$head = fraisdeportAdminPrepareHead();
+$head = remiseAdminPrepareHead();
 dol_fiche_head(
     $head,
     'settings',
     $langs->trans("Module104150Name"),
     0,
-    "fraisdeport@fraisdeport"
+    "remise@remise"
 );
 
 
@@ -101,7 +101,7 @@ function _saveIDServiceToUse($db, $idservice_to_use) {
 	
 	if(!empty($idservice_to_use)) {
 		
-		dolibarr_set_const($db, 'FRAIS_DE_PORT_ID_SERVICE_TO_USE', $idservice_to_use);
+		dolibarr_set_const($db, 'REMISE_ID_SERVICE_TO_USE', $idservice_to_use);
 		return true;
 		
 	}
@@ -115,7 +115,7 @@ print '<form name="formIDServiceToUse" method="POST" action="" />';
 
 $form = new Form($db);
 
-$form->select_produits(dolibarr_get_const($db, 'FRAIS_DE_PORT_ID_SERVICE_TO_USE'),'idservice',1,$conf->product->limit_size,$buyer->price_level);
+$form->select_produits(dolibarr_get_const($db, 'REMISE_ID_SERVICE_TO_USE'),'idservice',1,$conf->product->limit_size,$buyer->price_level);
 
 print '<input type="hidden" name="action" value="saveIDServiceToUse" />';
 
@@ -132,13 +132,13 @@ print '</form>';
 <tr>
     <td><?php echo $langs->trans('UseWeight') ?></td><td><?php
     
-        if($conf->global->FRAIS_DE_PORT_USE_WEIGHT==0) {
+        if($conf->global->REMISE_USE_WEIGHT==0) {
             
-             ?><a href="?action=save&TDivers[FRAIS_DE_PORT_USE_WEIGHT]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
             
         }
         else {
-             ?><a href="?action=save&TDivers[FRAIS_DE_PORT_USE_WEIGHT]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
             
         }
     

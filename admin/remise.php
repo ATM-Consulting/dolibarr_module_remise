@@ -2,8 +2,8 @@
 
 
 	require '../config.php';
-	dol_include_once('/fraisdeport/lib/fraisdeport.lib.php');
-	dol_include_once('/fraisdeport/class/fraisdeport.class.php');
+	dol_include_once('/remise/lib/remise.lib.php');
+	dol_include_once('/remise/class/remise.class.php');
 	
 	$langs->load("admin");
     $langs->load("deliveries");
@@ -12,32 +12,32 @@
 	if(empty($type)) $type = 'AMOUNT';
 	
 	$action = GETPOST('action');
-	$fdp = new TFraisDePort;
+	$remise = new TRemise;
 	$PDOdb=new TPDOdb;
 	
 	switch ($action) {
 		case 'save':
 			
 			if(GETPOST('bt_cancel')!='') {
-				header('location:'.dol_buildpath('/fraisdeport/admin/fdp.php?type='.GETPOST('type'),1) );
+				header('location:'.dol_buildpath('/remise/admin/remise.php?type='.GETPOST('type'),1) );
 			}
 			else{
-				$fdp->load($PDOdb, GETPOST('id'));
-				$fdp->set_values($_POST);
-				$fdp->save($PDOdb);		
+				$remise->load($PDOdb, GETPOST('id'));
+				$remise->set_values($_POST);
+				$remise->save($PDOdb);		
 				
-				setEventMessage($langs->trans('FraisDePortSaved'));
-				header('location:'.dol_buildpath('/fraisdeport/admin/fdp.php?type='.GETPOST('type').'&TListTBS[lPrice][orderBy][date_maj]=DESC',1) );
+				setEventMessage($langs->trans('RemiseSaved'));
+				header('location:'.dol_buildpath('/remise/admin/remise.php?type='.GETPOST('type').'&TListTBS[lPrice][orderBy][date_maj]=DESC',1) );
 			}
 		
 		case 'edit':
-			$fdp->load($PDOdb, GETPOST('id'));
-			fiche($fdp, $type, 'edit');
+			$remise->load($PDOdb, GETPOST('id'));
+			fiche($remise, $type, 'edit');
 			
 			break;
 		case 'new':
 			
-			fiche($fdp, $type, 'edit');
+			fiche($remise, $type, 'edit');
 			
 			break;
 		default:
@@ -46,23 +46,23 @@
 			break;
 	}
 	
-function fiche(&$fdp, $type, $mode) {
+function fiche(&$remise, $type, $mode) {
 	global $conf, $langs, $db;
 	
-	$page_name = "FraisDePortSetup";
+	$page_name = "RemiseSetup";
 	llxHeader('', $langs->trans($page_name));	
 	$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 	    . $langs->trans("BackToModuleList") . '</a>';
 	print_fiche_titre($langs->trans($page_name), $linkback);
 	
 	// Configuration header
-	$head = fraisdeportAdminPrepareHead();
-	dol_fiche_head(  $head,  $type,  $page_name,   0,   "fraisdeport@fraisdeport" );	
+	$head = remiseAdminPrepareHead();
+	dol_fiche_head(  $head,  $type,  $page_name,   0,   "remise@remise" );	
 	$form = new TFormCore('auto', 'form1','post');
 	$form->Set_typeaff($mode);
 	
 	echo $form->hidden('type', $type);
-	echo $form->hidden('id', $fdp->getId());
+	echo $form->hidden('id', $remise->getId());
 	echo $form->hidden('action', 'save');
 	
 	$f=new Form($db);
@@ -70,16 +70,44 @@ function fiche(&$fdp, $type, $mode) {
 	?>
 	<table class="border" width="100%">
 		<tr>
-			<td  width="20%"><?php echo $langs->trans('Palier') ?></td><td><?php echo $form->texte('','palier', $fdp->palier, 10,255) ?></td>
+			<td  width="20%"><?php echo $langs->trans('Palier') ?></td><td><?php echo $form->texte('','palier', $remise->palier, 10,255) ?></td>
 		</tr>
 		<tr>
-			<td><?php echo $langs->trans('FraisDePort') ?></td><td><?php echo $form->texte('','fdp', $fdp->fdp, 10,255) ?></td>
+			<td><?php echo $langs->trans('Remise') ?></td><td><?php echo $form->texte('','remise', $remise->remise, 10,255) ?></td>
 		</tr>
 		<tr>
-			<td><?php echo $langs->trans('Zip') ?></td><td><?php echo $form->texte('','zip', $fdp->zip, 5,255) ?></td>
+			<td><?php echo $langs->trans('Zip') ?></td><td><?php echo $form->texte('','zip', $remise->zip, 5,255) ?></td>
 		</tr>
 		<tr>
-			<td><?php echo $langs->trans('ShipmentMode') ?></td><td><?php $f->selectShippingMethod($fdp->fk_shipment_mode, 'fk_shipment_mode', '', 1) ?></td>
+			<td><?php echo $langs->trans('ShipmentMode') ?></td><td>
+				<?php
+					if((float)DOL_VERSION >= 3.7) $f->selectShippingMethod($remise->fk_shipment_mode, 'fk_shipment_mode', '', 1);
+					else {
+						
+						$query = "SELECT rowid, code, libelle";
+						$query.= " FROM ".MAIN_DB_PREFIX."c_shipment_mode";
+						$query.= " WHERE active = 1";
+						$query.= " ORDER BY libelle ASC";
+						
+						$resql = $db->query($query);
+						
+						print '<select id="fk_shipment_mode" class="flat selectshippingmethod" name="fk_shipment_mode"'.($moreattrib?' '.$moreattrib:'').'>';
+						
+						print '<option value="">';
+							print '</option>';
+						
+						while($res = $db->fetch_object($resql)) {
+							$selected = '';
+							if($remise->fk_shipment_mode == $res->rowid) $selected = 'selected="selected"';
+							print '<option value="'.$res->rowid.'" '.$selected.'>';
+							print $langs->trans("SendingMethod".strtoupper($res->code));
+							print '</option>';
+						}
+						
+						print '</select>';
+						
+					} 
+				?></td>
 		</tr>
 		
 	</table>
@@ -102,7 +130,7 @@ function fiche(&$fdp, $type, $mode) {
 function liste($type) {
 	global $conf, $langs;
 	
-	$page_name = "FraisDePortSetup";
+	$page_name = "RemiseSetup";
 	llxHeader('', $langs->trans($page_name));	
 	
 	$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
@@ -110,15 +138,15 @@ function liste($type) {
 	print_fiche_titre($langs->trans($page_name), $linkback);
 	
 	// Configuration header
-	$head = fraisdeportAdminPrepareHead();
+	$head = remiseAdminPrepareHead();
 
-	dol_fiche_head(  $head,  $type,  $page_name,   0,   "fraisdeport@fraisdeport" );	
+	dol_fiche_head(  $head,  $type,  $page_name,   0,   "remise@remise" );	
 	
 
 	$l=new TListviewTBS('lPrice');
 	
 	
-	$sql="SELECT rowid as Id, palier,fdp,zip,fk_shipment_mode,date_maj FROM ".MAIN_DB_PREFIX."frais_de_port 
+	$sql="SELECT rowid as Id, palier,remise,zip,fk_shipment_mode,date_maj FROM ".MAIN_DB_PREFIX."remise 
 			WHERE type=:type";
 	
 	$PDOdb=new TPDOdb;
@@ -129,10 +157,10 @@ function liste($type) {
 	
 	echo $l->render($PDOdb, $sql, array(
 		'link'=>array(
-			'Id'=>'<a href="'.dol_buildpath('/fraisdeport/admin/fdp.php?action=edit&id=@val@&type='.$type,1).'">@val@</a>'
+			'Id'=>'<a href="'.dol_buildpath('/remise/admin/remise.php?action=edit&id=@val@&type='.$type,1).'">@val@</a>'
 		)
 		,'type'=>array(
-			'fdp'=>'money'
+			'remise'=>'money'
 			,'palier'=>'number'
 			
 			
@@ -142,7 +170,7 @@ function liste($type) {
 			'palier'=>$langs->trans('Palier')
 			,'zip'=>$langs->trans('Zip')
 			,'fk_shipment_mode'=>$langs->trans('ShipmentMode')
-			,'fdp'=>$langs->trans('FraisDePort')
+			,'remise'=>$langs->trans('Remise')
 			,'date_maj'=>$langs->trans('Update')
 		)
 		,'eval'=>array(
@@ -151,7 +179,7 @@ function liste($type) {
 		,'search'=>array(
 			'palier'=>true
 			,'zip'=>true
-			,'fdp'=>true
+			,'remise'=>true
 		)
 	),array(
 		':type'=>$type

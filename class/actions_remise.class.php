@@ -1,5 +1,5 @@
 <?php
-class ActionsFraisdeport
+class ActionsRemise
 { 
      /** Overloading the doActions function : replacing the parent's function with the one below 
       *  @param      parameters  meta datas of the hook (context, etc...) 
@@ -25,7 +25,7 @@ class ActionsFraisdeport
    function formObjectOptions($parameters, &$object, &$action, $hookmanager) {  
         global $conf, $langs,$db;
 		
- 		if((in_array('ordercard',explode(':',$parameters['context'])) || in_array('propalcard',explode(':',$parameters['context']))) && $conf->global->FRAIS_DE_PORT_USE_WEIGHT) {
+ 		if((in_array('ordercard',explode(':',$parameters['context'])) || in_array('propalcard',explode(':',$parameters['context']))) && $conf->global->REMISE_USE_WEIGHT) {
  			    
 	        print '<script type="text/javascript">
 	                $(document).ready(function() { ';

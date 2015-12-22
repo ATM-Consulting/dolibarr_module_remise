@@ -23,37 +23,37 @@
  *				Put some comments here
  */
 
-function fraisdeportAdminPrepareHead()
+function remiseAdminPrepareHead()
 {
     global $langs, $conf;
 
-    $langs->load("fraisdeport@fraisdeport");
+    $langs->load("remise@remise");
 
     $h = 0;
     $head = array();
 
-    $head[$h][0] = dol_buildpath("/fraisdeport/admin/admin_fraisdeport.php", 1);
+    $head[$h][0] = dol_buildpath("/remise/admin/admin_remise.php", 1);
     $head[$h][1] = $langs->trans("Settings");
     $head[$h][2] = 'settings';
     $h++;
-    $head[$h][0] = dol_buildpath("/fraisdeport/admin/fdp.php?type=AMOUNT", 1);
+    $head[$h][0] = dol_buildpath("/remise/admin/remise.php?type=AMOUNT", 1);
     $head[$h][1] = $langs->trans("Price");
     $head[$h][2] = 'AMOUNT';
     $h++;
 	
-	if(!empty($conf->global->FRAIS_DE_PORT_USE_WEIGHT)) {
-	    $head[$h][0] = dol_buildpath("/fraisdeport/admin/fdp.php?type=WEIGHT", 1);
+	if(!empty($conf->global->REMISE_USE_WEIGHT)) {
+	    $head[$h][0] = dol_buildpath("/remise/admin/remise.php?type=WEIGHT", 1);
 	    $head[$h][1] = $langs->trans("Weight");
 	    $head[$h][2] = 'WEIGHT';
 	    $h++;
 		
 	}
 
-    $head[$h][0] = dol_buildpath("/fraisdeport/admin/import.php", 1);
+    $head[$h][0] = dol_buildpath("/remise/admin/import.php", 1);
     $head[$h][1] = $langs->trans("Import");
     $head[$h][2] = 'import';
     $h++;
-    $head[$h][0] = dol_buildpath("/fraisdeport/admin/about.php", 1);
+    $head[$h][0] = dol_buildpath("/remise/admin/about.php", 1);
     $head[$h][1] = $langs->trans("About");
     $head[$h][2] = 'about';
     $h++;

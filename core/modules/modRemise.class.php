@@ -28,7 +28,7 @@ include_once DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php";
 /**
  * Description and activation class for module MyModule
  */
-class modFraisdeport extends DolibarrModules
+class modRemise extends DolibarrModules
 {
 
     /**
@@ -47,7 +47,7 @@ class modFraisdeport extends DolibarrModules
         // (See in Home -> System information -> Dolibarr for list of used modules id).
         $this->numero = 104150; // 104000 to 104999 for ATM CONSULTING
         // Key text used to identify module (for permissions, menus, etc...)
-        $this->rights_class = 'fraisdeport';
+        $this->rights_class = 'remise';
 
         // Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
         // It is used to group modules in module setup page
@@ -59,7 +59,7 @@ class modFraisdeport extends DolibarrModules
         // Module description
         // used if translation string 'ModuleXXXDesc' not found
         // (where XXX is value of numeric property 'numero' of module)
-        $this->description = "Frais de port calculés en fonction du prix de la commande";
+        $this->description = "Remises calculées en fonction du prix du document";
         // Possible values for version are: 'development', 'experimental' or version
         $this->version = '1.0';
         // Key used in llx_const table to save module status enabled/disabled
@@ -73,7 +73,7 @@ class modFraisdeport extends DolibarrModules
         // use this->picto='pictovalue'
         // If file is in module/img directory under name object_pictovalue.png
         // use this->picto='pictovalue@module'
-        $this->picto = 'fraisdeport@fraisdeport'; // mypicto@mymodule
+        $this->picto = 'remise@remise'; // mypicto@mymodule
         // Defined all module parts (triggers, login, substitutions, menus, css, etc...)
         // for default path (eg: /mymodule/core/xxxxx) (0=disable, 1=enable)
         // for specific path of parts (eg: /mymodule/core/modules/barcode)
@@ -105,7 +105,7 @@ class modFraisdeport extends DolibarrModules
 
         // Config pages. Put here list of php pages
         // stored into mymodule/admin directory, used to setup module.
-        $this->config_page_url = array("admin_fraisdeport.php@fraisdeport");
+        $this->config_page_url = array("admin_remise.php@remise");
 
         // Dependencies
         // List of modules id that must be enabled if this module is enabled
@@ -116,7 +116,7 @@ class modFraisdeport extends DolibarrModules
         $this->phpmin = array(5, 3);
         // Minimum version of Dolibarr required by module
         $this->need_dolibarr_version = array(3, 2);
-        $this->langfiles = array("fraisdeport@fraisdeport"); // langfiles@mymodule
+        $this->langfiles = array("remise@remise"); // langfiles@mymodule
         // Constants
         // List of particular constants to add when module is enabled
         // (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
@@ -165,7 +165,7 @@ class modFraisdeport extends DolibarrModules
         $r = 0;
         // Example:
 
-        $this->boxes[$r][1] = "MyBox@fraisdeport";
+        $this->boxes[$r][1] = "MyBox@remise";
         $r ++;
         /*
           $this->boxes[$r][1] = "myboxb.php";
@@ -297,53 +297,53 @@ class modFraisdeport extends DolibarrModules
 
         $result = $this->loadTables();
 		
-		// Création extrafield pour choix si frais de port doit apparaitre sur doc.
+		// Création extrafield pour choix si remise doit apparaitre sur doc.
 		dol_include_once('/core/class/extrafields.class.php');
 		//function addExtraField($attrname, $label, $type, $pos, $size, $elementtype, $unique=0, $required=0,$default_value='', $param=0)
 		$ext = new ExtraFields($db);
-		$res = $ext->addExtraField("use_frais_de_port", 'Automatisation des frais de port', 'select', 0, "", 'propal', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
-		$res = $ext->addExtraField("use_frais_de_port", 'Automatisation des frais de port', 'select', 0, "", 'commande', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
+		$res = $ext->addExtraField("use_remise", 'Automatisation des remises', 'select', 0, "", 'propal', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
+		$res = $ext->addExtraField("use_remise", 'Automatisation des remises', 'select', 0, "", 'commande', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
 		
 		define('INC_FROM_DOLIBARR', true);
 		
-		dol_include_once('/fraisdeport/config.php');
-		dol_include_once('/fraisdeport/class/fraisdeport.class.php');
+		dol_include_once('/remise/config.php');
+		dol_include_once('/remise/class/remise.class.php');
 		
 		$PDOdb=new TPDOdb;
-		$o=new TFraisDePort;
+		$o=new TRemise;
 		$o->init_db_by_vars($PDOdb);
 		
-		if(!empty($conf->global->FRAIS_DE_PORT_WEIGHT_ARRAY)) {
+		if(!empty($conf->global->REMISE_WEIGHT_ARRAY)) {
 			
-			$TFraisDePort = unserialize($conf->global->FRAIS_DE_PORT_WEIGHT_ARRAY);
+			$TRemise = unserialize($conf->global->REMISE_WEIGHT_ARRAY);
 			
-			foreach($TFraisDePort as $fdp) {
+			foreach($TRemise as $remise) {
 				
-				$o=new TFraisDePort;
-				$o->palier = $fdp['weight'];
-				$o->fdp = $fdp['fdp'];
-				$o->zip = $fdp['zip'];
+				$o=new TRemise;
+				$o->palier = $remise['weight'];
+				$o->remise = $remise['remise'];
+				$o->zip = $remise['zip'];
 				$o->type='WEIGHT';
 				$o->save($PDOdb);
 				
 			}
 			
 			
-			dolibarr_del_const($db, 'FRAIS_DE_PORT_WEIGHT_ARRAY');
+			dolibarr_del_const($db, 'REMISE_WEIGHT_ARRAY');
 		}
 		
-		if(!empty($conf->global->FRAIS_DE_PORT_ARRAY)) {
-			$TFraisDePort = unserialize($conf->global->FRAIS_DE_PORT_ARRAY);
-			foreach($TFraisDePort as $palier=>$fdp) {
-				$o=new TFraisDePort;
+		if(!empty($conf->global->REMISE_ARRAY)) {
+			$TRemise = unserialize($conf->global->REMISE_ARRAY);
+			foreach($TRemise as $palier=>$remise) {
+				$o=new TRemise;
 				$o->palier = $palier;
-				$o->fdp = $fdp;
+				$o->remise = $remise;
 				$o->type='AMOUNT';
 				$o->save($PDOdb);
 				
 			}
 			
-			dolibarr_del_const($db, 'FRAIS_DE_PORT_ARRAY');
+			dolibarr_del_const($db, 'REMISE_ARRAY');
 		}
 		
         return $this->_init($sql, $options);

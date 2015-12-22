@@ -1,5 +1,5 @@
 <?php
-/* Module de gestion des frais de port
+/* Module de gestion des remises
  * Copyright (C) 2013 ATM Consulting <support@atm-consulting.fr>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,19 +25,19 @@
 // Dolibarr environment
 
 require('../config.php');
-dol_include_once('/fraisdeport/class/fraisdeport.class.php');
+dol_include_once('/remise/class/remise.class.php');
 
 $PDOdb=new TPDOdb;
 
 global $db;
 
 // Libraries
-dol_include_once("fraisdeport/core/lib/admin.lib.php");
-dol_include_once('fraisdeport/lib/fraisdeport.lib.php');
+dol_include_once("remise/core/lib/admin.lib.php");
+dol_include_once('remise/lib/remise.lib.php');
 dol_include_once('core/lib/admin.lib.php');
 //require_once "../class/myclass.class.php";
 // Translations
-$langs->load("fraisdeport@fraisdeport");
+$langs->load("remise@remise");
 
 // Access control
 if (! $user->admin) {
@@ -69,7 +69,7 @@ if($action === 'import') {
 			
 			$data['ok'] = 1;
 			
-			$o = new TFraisDePort;
+			$o = new TRemise;
 			$o->zip = str_pad($data[0],2,'0',STR_PAD_LEFT);
 			$o->type = $data[1]>0 ? 'WEIGHT' : 'AMOUNT';
 			$o->palier = $data[1]>0 ? $data[1] : $data[2];
@@ -84,7 +84,7 @@ if($action === 'import') {
 
 
 
-$page_name = "FraisDePortImport";
+$page_name = "RemiseImport";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
@@ -93,13 +93,13 @@ $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
-$head = fraisdeportAdminPrepareHead();
+$head = remiseAdminPrepareHead();
 dol_fiche_head(
     $head,
     'import',
     $langs->trans("Module104150Name"),
     0,
-    "fraisdeport@fraisdeport"
+    "remise@remise"
 );
 
 $form = new TFormCore('auto', 'formImport', 'post', true);
