@@ -156,16 +156,17 @@ class InterfaceRemise
 				$p->fetch($fk_product);
 				
 				$object->statut = 0;
+				$object->brouillon = 1;
 				
 				$used_tva = ($object->client->tva_assuj == 1) ? $p->tva_tx : 0;
 				
-				if($object->element == 'commande') {
-					$object->addline("Remise", $remise_used, 1, $used_tva, 0, 0, $fk_product, 0, 0, 0, 'HT', 0, '', '', $p->type);
+				if($object->element == 'commande' || (float)DOL_VERSION == 3.6) { // Les paramètres sont tous dans le même ordre dans doulibarr 3.6
+					$object->addline("Remise de ".$remise_used.' %', ($object->total_ht * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
 				} else if($object->element == 'propal') {
-					$object->addline("Remise", $remise_used, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
+					$object->addline("Remise de ".$remise_used.' %', ($object->total_ht * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
 				}
                 
-                setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
+               // setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
 				
 				$object->fetch($object->id);
 				$object->statut = 1; // TODO AA à quoi ça sert... Puisqu'il n'ya pas de save... :-|

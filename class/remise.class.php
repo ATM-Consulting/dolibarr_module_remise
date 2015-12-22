@@ -23,7 +23,7 @@ class TRemise extends TObjetStd {
 		FROM ".MAIN_DB_PREFIX."remise WHERE type='".$type."' 
 		";
 		
-		if($type == 'AMOUNT') $sql.="ORDER BY palier ASC,zip DESC ,fk_shipment_mode DESC";
+		if($type == 'AMOUNT') $sql.="ORDER BY palier DESC,zip DESC ,fk_shipment_mode DESC";
 		else $sql.="ORDER BY palier DESC, zip DESC, fk_shipment_mode DESC";
 		
 		$Tab = $PDOdb->ExecuteAsArray($sql);
@@ -54,8 +54,8 @@ class TRemise extends TObjetStd {
 		
 		$TRemise = TRemise::getAll($PDOdb, $type, true, !empty($zip), !empty($fk_shipment_mode));
 		$remise_used = 0; $find = false;
-        if(is_array($TRemise) && count($TRemise) > 0) {
-        		
+        if(!empty($TRemise)) {
+        	
         	foreach ($TRemise as &$remise) {
             		
             	if($type === 'WEIGHT' && $total >= $remise['palier'] && ($remise['remise']>$remise_used || empty($remise_used) )) {
@@ -75,9 +75,9 @@ class TRemise extends TObjetStd {
                     
                 }
 				else if($type==='AMOUNT') {
-					if($total < $remise['palier'] && ($remise['remise']<$remise_used || empty($remise_used) ) ) {
-							$remise_used = $remise['remise'];
-							$find = true;
+					if($total >= $remise['palier'] && ($remise['remise'] > $remise_used || empty($remise_used) ) ) {
+						$remise_used = $remise['remise'];
+						$find = true;
 					}
 				}
 				
