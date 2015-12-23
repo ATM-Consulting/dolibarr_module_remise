@@ -68,7 +68,7 @@ $head = remiseAdminPrepareHead();
 dol_fiche_head(
     $head,
     'about',
-    $langs->trans("Module104150Name"),
+    $langs->trans("Module104921Name"),
     0,
     'mymodule@mymodule'
 );

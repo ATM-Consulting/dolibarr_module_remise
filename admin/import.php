@@ -97,7 +97,7 @@ $head = remiseAdminPrepareHead();
 dol_fiche_head(
     $head,
     'import',
-    $langs->trans("Module104150Name"),
+    $langs->trans("Module104921Name"),
     0,
     "remise@remise"
 );
