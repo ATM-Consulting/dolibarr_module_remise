@@ -162,7 +162,7 @@ class InterfaceRemise
 				$used_tva = ($object->client->tva_assuj == 1) ? $p->tva_tx : 0;
 				
 				if($object->element == 'commande' || (float)DOL_VERSION == 3.6) { // Les paramètres sont tous dans le même ordre dans doulibarr 3.6
-					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
+					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product,0,0,0,'HT',0,'','', $p->type);
 				} else if($object->element == 'propal') {
 					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
 				}
