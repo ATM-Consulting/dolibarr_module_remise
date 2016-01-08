@@ -167,7 +167,7 @@ class InterfaceRemise
 				 else if($object->element == 'propal') {
 					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product, 0, 'HT', 0, 0, $p->type);
 				}
-			 	else{
+			 	else if($object->element == 'commande'){
 					$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
 				}
                 
