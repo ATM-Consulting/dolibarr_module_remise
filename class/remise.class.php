@@ -58,7 +58,7 @@ class TRemise extends TObjetStd {
 			dol_include_once('/societe/class/societe.class.php');
 			$s = new Societe($db);
 			$s->fetch($fk_soc);
-			return $s->array_options['options_remise_disponible'];
+			return $s->array_options['options_remsup'];
 		}
 		
 		$TRemise = TRemise::getAll($PDOdb, $type, true, !empty($zip), !empty($fk_shipment_mode));

@@ -89,7 +89,7 @@ switch ($action) {
 			dolibarr_set_const($db, 'REMISE_USE_THIRDPARTY_DISCOUNT', $val);
 			dolibarr_set_const($db, 'REMISE_USE_WEIGHT', !$val);
 			$e = new ExtraFields($db);
-			$e->addExtraField('remise_disponible', 'Remise disponible (en euros)', 'double', '', '24,8', 'societe');
+			$e->addExtraField('remsup', 'Remise supplémentaire', 'double', '', '24,8', 'societe');
 		} elseif($const_name === 'REMISE_USE_WEIGHT' && !empty($val)){
 			dolibarr_set_const($db, 'REMISE_USE_WEIGHT', $val);
 			dolibarr_set_const($db, 'REMISE_USE_THIRDPARTY_DISCOUNT', !$val);
