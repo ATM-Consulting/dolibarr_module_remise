@@ -181,11 +181,11 @@ print '</form>';
     
         if($conf->global->REMISE_USE_THIRDPARTY_DISCOUNT==0) {
             
-             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=1"><?php print img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
             
         }
         else {
-             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=0"><?php print img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
             
         }
     
