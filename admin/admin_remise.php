@@ -166,11 +166,11 @@ print '</form>';
     
         if($conf->global->REMISE_USE_WEIGHT==0) {
             
-             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=1"><?php print img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
             
         }
         else {
-             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=0"><?php print img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
             
         }
     
