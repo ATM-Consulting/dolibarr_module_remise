@@ -50,7 +50,16 @@ class TRemise extends TObjetStd {
 		
 		return $TRemise;
 	}
-	static function getRemise(&$PDOdb, $type, $total, $zip='', $fk_shipment_mode = 0) {
+	static function getRemise(&$PDOdb, $type, $total, $zip='', $fk_shipment_mode = 0, $fk_soc=0) {
+		
+		global $db, $conf;
+		
+		if(!empty($conf->global->REMISE_USE_THIRDPARTY_DISCOUNT) && !empty($fk_soc)) {
+			dol_include_once('/societe/class/societe.class.php');
+			$s = new Societe($db);
+			$s->fetch($fk_soc);
+			return $s->array_options['options_remsup'];
+		}
 		
 		$TRemise = TRemise::getAll($PDOdb, $type, true, !empty($zip), !empty($fk_shipment_mode));
 		$remise_used = 0; $find = false;

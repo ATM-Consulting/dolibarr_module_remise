@@ -9,4 +9,5 @@ IDServiceSaved=Ce service sera utilisé pour la gestion des remises
 IDServiceNotSaved=Aucun service trouvé...
 PortTaxAdded=Remise ajoutée
 UseWeight=Gérer les remises en fonction du poids
+UseThirdPartyDiscount=Gérer les remises en fonction du montant défini sur chaque tiers (prime sur le montant du document et le poids)
 RegisterSuccess=Paramètres enregistrés avec succès

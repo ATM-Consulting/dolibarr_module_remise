@@ -35,7 +35,9 @@ global $db;
 dol_include_once("remise/core/lib/admin.lib.php");
 dol_include_once('remise/lib/remise.lib.php');
 dol_include_once('core/lib/admin.lib.php');
+dol_include_once('core/lib/ajax.lib.php');
 dol_include_once('/categories/class/categorie.class.php');
+dol_include_once('/core/class/extrafields.class.php');
 //require_once "../class/myclass.class.php";
 // Translations
 $langs->load("remise@remise");
@@ -79,8 +81,24 @@ switch ($action) {
 			
 		}
 	
+	case 'save':
+		$const_name = array_keys($_REQUEST['TDivers'])[0];
+		$val = $conf->global->{$const_name};
+		$val = !$val;
+		if($const_name === 'REMISE_USE_THIRDPARTY_DISCOUNT' && !empty($val)){
+			dolibarr_set_const($db, 'REMISE_USE_THIRDPARTY_DISCOUNT', $val);
+			dolibarr_set_const($db, 'REMISE_USE_WEIGHT', !$val);
+			$e = new ExtraFields($db);
+			$e->addExtraField('remsup', 'Remise supplémentaire', 'double', '', '24,8', 'societe');
+		} elseif($const_name === 'REMISE_USE_WEIGHT' && !empty($val)){
+			dolibarr_set_const($db, 'REMISE_USE_WEIGHT', $val);
+			dolibarr_set_const($db, 'REMISE_USE_THIRDPARTY_DISCOUNT', !$val);
+		} else {
+			dolibarr_set_const($db, $const_name, $val);
+		}
+	
 	default:
-		
+	
 		break;
 }
  
@@ -148,11 +166,26 @@ print '</form>';
     
         if($conf->global->REMISE_USE_WEIGHT==0) {
             
-             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=1"><?=img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=1"><?php print img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
             
         }
         else {
-             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=0"><?=img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+             ?><a href="?action=save&TDivers[REMISE_USE_WEIGHT]=0"><?php print img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
+            
+        }
+    
+    ?></td>             
+</tr>
+<tr>
+    <td><?php echo $langs->trans('UseThirdPartyDiscount') ?></td><td><?php
+    
+        if($conf->global->REMISE_USE_THIRDPARTY_DISCOUNT==0) {
+            
+             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=1"><?php print img_picto($langs->trans("Disabled"),'switch_off'); ?></a><?php
+            
+        }
+        else {
+             ?><a href="?action=save&TDivers[REMISE_USE_THIRDPARTY_DISCOUNT]=0"><?php print img_picto($langs->trans("Activated"),'switch_on'); ?></a><?php
             
         }
     

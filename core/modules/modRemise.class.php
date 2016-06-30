@@ -303,6 +303,7 @@ class modRemise extends DolibarrModules
 		$ext = new ExtraFields($db);
 		$res = $ext->addExtraField("use_remise", 'Automatisation des remises', 'select', 0, "", 'propal', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
 		$res = $ext->addExtraField("use_remise", 'Automatisation des remises', 'select', 0, "", 'commande', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
+		$res = $ext->addExtraField("use_remise", 'Automatisation des remises', 'select', 0, "", 'facture', 0, 0, '', array("options" =>array("Oui" => "Oui", "Non" => "Non")));
 		
 		define('INC_FROM_DOLIBARR', true);
 		
