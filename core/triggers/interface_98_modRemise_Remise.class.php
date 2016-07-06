@@ -178,8 +178,9 @@ class InterfaceRemise
                 
                // setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
 				
-				$object->fetch($object->id);
-				$object->statut = 1; // TODO AA à quoi ça sert... Puisqu'il n'ya pas de save... :-|
+				// Je vire cette partie, ça empêche le passage d'autres trigger sur la validation puisque du coup statut = 1...
+				//$object->fetch($object->id);
+				//$object->statut = 1; // TODO AA à quoi ça sert... Puisqu'il n'ya pas de save... :-|
 			
 				
 			}
