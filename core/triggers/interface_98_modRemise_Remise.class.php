@@ -173,7 +173,7 @@ class InterfaceRemise
 						$object->addline("Remise de ".$remise_used.' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
 					}
 				} else {
-					if(!empty($remise_used)) $object->addline("Remise de ".price($remise_used).' %', (($total * $remise_used / 100) / (1 + $used_tva / 100)) * -1, 1, $used_tva, 0, 0, $fk_product);
+					if(!empty($remise_used)) $object->addline("Remise de ".price($remise_used).' %', ($total * $remise_used / 100) * -1, 1, $used_tva, 0, 0, $fk_product);
 				}
                 
                // setEventMessage($langs->trans('PortTaxAdded').' : '.price($remise_used).$conf->currency.' '.$langs->trans('VAT').' '.$used_tva.'%' );
