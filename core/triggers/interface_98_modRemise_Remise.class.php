@@ -118,7 +118,7 @@ class InterfaceRemise
         // Users
         if ($action == 'ORDER_VALIDATE' || $action == 'PROPAL_VALIDATE' || $action == 'BILL_VALIDATE') {
         	
-			global $db,$conf;
+			global $db,$conf,$mysoc;
 
 			$langs->load('remise@remise');
 			
@@ -147,7 +147,7 @@ class InterfaceRemise
                 $remise_used_weight = 0;
                 if($conf->global->REMISE_USE_WEIGHT) {
                 	$total_weight = TRemise::getTotalWeight($object);
-					$remise_used_weight = TRemise::getRemise($PDOdb, 'WEIGHT', $total_weight, $object->client->zip);
+					$remise_used_weight = TRemise::getRemise($PDOdb, 'WEIGHT', $total_weight, $object->thirdparty->zip);
 					
 				}
                
@@ -159,7 +159,8 @@ class InterfaceRemise
 				$object->statut = 0;
 				$object->brouillon = 1;
 				
-				$used_tva = ($object->client->tva_assuj == 1) ? $p->tva_tx : 0;
+				//$used_tva = ($object->thirdparty->tva_assuj == 1) ? $p->tva_tx : 0;
+				$used_tva = get_default_tva($mysoc, $object->thirdparty, $p->id);
 				
 				if(empty($conf->global->REMISE_USE_THIRDPARTY_DISCOUNT)) {
 
